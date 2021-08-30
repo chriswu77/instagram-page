@@ -38,6 +38,10 @@ const MainContent = styled.div`
   max-width: 935px;
   padding-bottom: 32px;
   margin-top: 32px;
+
+  @media (min-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const LeftContent = styled.div`
@@ -46,6 +50,14 @@ const LeftContent = styled.div`
   background-size: 454px 618px;
   height: 618px;
   width: 454px;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  @media (min-width: 992px) {
+    display: block;
+  }
 `;
 
 const ImgContainer = styled.div`
