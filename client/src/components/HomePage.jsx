@@ -8,6 +8,7 @@ import { authActions } from '../../store/auth';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 100px;
 `;
 
 const ListItem = styled.li`
