@@ -1,13 +1,16 @@
 /* eslint-disable no-useless-escape */
-/* eslint-disable react/jsx-no-duplicate-props */
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import axios from 'axios';
 
 import ImgCarousel from './ImgCarousel';
 import FooterLink from './FooterLink';
+import FormInput from './FormInput';
+import { authActions } from '../../store/auth';
 
 // STYLED COMPONENTS
 const ColumnContainer = styled.div`
@@ -82,15 +85,6 @@ const LoginForm = styled.form`
   flex-direction: column;
 `;
 
-const TextInput = styled(TextField)`
-  width: 258px !important;
-  box-sizing: border-box;
-  border: 1px solid rgb(219, 219, 219) !important;
-  border-radius: 3px !important;
-  margin-bottom: 6px !important;
-  // padding: 27px 12px 10px !important;
-`;
-
 const PasswordContainer = styled.div`
   position: relative;
 `;
@@ -160,6 +154,14 @@ const FacebookText = styled.span`
   color: #385185;
   font-size: 14px;
   font-weight: 600;
+`;
+
+const ErrorText = styled.p`
+  color: #ed4956;
+  font-size: 14px;
+  line-height: 18px;
+  margin: 10px 0;
+  text-align: center;
 `;
 
 const ForgotText = styled.a`
@@ -238,25 +240,29 @@ const InfoText = styled.span`
 // STYLED COMPONENTS END
 
 const LoginPage = (props) => {
-  const [username, setUsername] = useState('');
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordType, setPasswordType] = useState('password');
   const [showButton, setShowButton] = useState(false);
   const [valid, setValid] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [redirectTo, setRedirectTo] = useState();
 
-  const validateInputs = (userInput, passwordInput) => {
+  const validateInputs = (emailInput, passwordInput) => {
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (userInput.match(emailRegex) && passwordInput.length >= 6) {
+    if (emailInput.match(emailRegex) && passwordInput.length >= 6) {
       setValid(true);
     } else {
       setValid(false);
     }
   };
 
-  const handleUsernameInput = (e) => {
+  const handleEmailInput = (e) => {
     const input = e.target.value;
 
-    setUsername(input);
+    setEmail(input);
     validateInputs(input, password);
   };
 
@@ -264,7 +270,7 @@ const LoginPage = (props) => {
     const input = e.target.value;
 
     setPassword(input);
-    validateInputs(username, input);
+    validateInputs(email, input);
 
     if (input) {
       setShowButton(true);
@@ -282,6 +288,32 @@ const LoginPage = (props) => {
     }
   };
 
+  const handleSignup = (e) => {
+    e.preventDefault();
+    setRedirectTo('/signup');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('/api/users/login', {
+        username: email,
+        password,
+      });
+      dispatch(authActions.logIn(response.data));
+      setShowError(false);
+      setRedirectTo('/');
+    } catch (err) {
+      console.log('login error:', err);
+      setShowError(true);
+    }
+  };
+
+  if (redirectTo) {
+    return <Redirect to={{ pathname: redirectTo }} />;
+  }
+
   return (
     <Section>
       <MainContainer>
@@ -294,53 +326,23 @@ const LoginPage = (props) => {
           <RightContent>
             <LoginBox>
               <Logo src="logo.png" />
-              <LoginForm>
-                <TextInput
-                  label="Email"
-                  placeholder="Email"
-                  variant="filled"
+              <LoginForm onSubmit={handleSubmit}>
+                <FormInput
                   type="email"
-                  inputProps={{
-                    style: {
-                      backgroundColor: 'rgb(250, 250, 250)',
-                      fontSize: '12px',
-                      padding: '24px 8px 7px',
-                    },
-                  }}
-                  InputLabelProps={{
-                    style: {
-                      fontSize: '12px',
-                      color: 'rgba(0,0,0,0.54)',
-                      marginLeft: '-4px',
-                    },
-                  }}
-                  InputProps={{ disableUnderline: true }}
-                  onChange={handleUsernameInput}
+                  text="Email"
+                  onChange={handleEmailInput}
                 />
                 <PasswordContainer>
-                  <TextInput
-                    label="Password"
-                    placeholder="Password"
-                    variant="filled"
+                  <FormInput
                     type={passwordType}
-                    inputProps={{
-                      style: {
-                        backgroundColor: 'rgb(250, 250, 250)',
-                        fontSize: '12px',
-                        padding: '24px 8px 7px',
-                      },
-                    }}
-                    InputLabelProps={{
-                      style: {
-                        fontSize: '12px',
-                        color: 'rgba(0,0,0,0.54)',
-                        marginLeft: '-4px',
-                      },
-                    }}
-                    InputProps={{ disableUnderline: true }}
+                    text="Password"
                     onChange={handlePasswordInput}
                   />
-                  <ShowButton password={password} onClick={handleShowBtnClick}>
+                  <ShowButton
+                    password={password}
+                    type="button"
+                    onClick={handleShowBtnClick}
+                  >
                     {passwordType === 'password' ? 'Show' : 'Hide'}
                   </ShowButton>
                 </PasswordContainer>
@@ -352,19 +354,26 @@ const LoginPage = (props) => {
                   <OrText>or</OrText>
                   <HorizontalLine />
                 </SplitContainer>
-                <FacebookButton>
+                <FacebookButton type="button">
                   <FontAwesomeIcon
                     icon={faFacebookSquare}
                     className="facebook-icon"
                   />
                   <FacebookText>Log in with Facebook</FacebookText>
                 </FacebookButton>
+                {showError && (
+                  <ErrorText>
+                    Invalid email/username. Please check and try again.
+                  </ErrorText>
+                )}
                 <ForgotText>Forgot password?</ForgotText>
               </LoginForm>
             </LoginBox>
             <SignupBox>
               <SignupText>Don&apos;t have an account?</SignupText>
-              <SignupButton>Sign up</SignupButton>
+              <SignupButton onClick={handleSignup} type="button">
+                Sign up
+              </SignupButton>
             </SignupBox>
             <AppText>Get the app.</AppText>
             <DownloadsContainer>
