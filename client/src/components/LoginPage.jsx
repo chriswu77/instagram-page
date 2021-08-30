@@ -1,14 +1,40 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+
 import ImgCarousel from './ImgCarousel';
+import FooterLink from './FooterLink';
 
 // STYLED COMPONENTS
+const ColumnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+`;
+
+const MainContainer = styled.main`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const MainContent = styled.div`
   display: flex;
   width: 100%;
   max-width: 935px;
+  padding-bottom: 32px;
+  margin-top: 110px;
 `;
 
 const LeftContent = styled.div`
@@ -27,30 +53,28 @@ const ImgContainer = styled.div`
   left: 151px;
 `;
 
-const ColumnContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const RightContent = styled(ColumnContainer)`
-  margin-top: 30px;
+  align-items: center;
+  margin-top: 35px;
   max-width: 350px;
 `;
 
-const LoginBox = styled(ColumnContainer)`
+const Box = styled(ColumnContainer)`
   background-color: rgb(255, 255, 255);
-  border: 1px solid rgba(var(--b6a, 219, 219, 219), 1);
+  border: 1px solid #dbdbdb;
   border-radius: 1px;
   margin: 0 0 10px;
-  padding: 10px 40px;
+`;
+
+const LoginBox = styled(Box)`
+  padding: 15px 40px 20px;
 `;
 
 const Logo = styled.img`
-  // width: 175px;
-  // height: 51px;
   width: 200px;
-  height: 70px;
-  // margin: 22px auto 12px;
+  height: 75px;
+  margin-bottom: 27px;
+  align-self: center;
 `;
 
 const LoginForm = styled.form`
@@ -80,6 +104,9 @@ const ShowButton = styled.button`
   font-size: 14px;
   font-weight: 600;
   background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 9px;
 `;
 
 const LoginButton = styled.button`
@@ -90,20 +117,154 @@ const LoginButton = styled.button`
   background-color: #0095f6;
   color: #fff;
   font-weight: bold;
+  font-size: 14px;
   margin: 8px 0;
+  opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+  cursor: ${(props) => (props.disabled ? 'auto' : 'pointer')};
+`;
+
+const SplitContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: 18px;
+  align-items: center;
+`;
+
+const HorizontalLine = styled.div`
+  height: 1px;
+  background-color: #dbdbdb;
+  width: 100%;
+`;
+
+const OrText = styled.p`
+  margin: 0 18px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 15px;
+  text-transform: uppercase;
+  color: #8e8e8e;
+`;
+
+const FacebookButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  margin: 8px 0;
+  cursor: pointer;
+`;
+
+const FacebookText = styled.span`
+  color: #385185;
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+const ForgotText = styled.a`
+  color: #00376b;
+  font-size: 12px;
+  line-height: 14px;
+  margin-top: 12px;
+  text-align: center;
+  cursor: pointer;
+`;
+
+const SignupBox = styled(Box)`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 0;
+  font-size: 14px;
+  width: 100%;
+`;
+
+const SignupText = styled.span`
+  color: #262626;
+`;
+
+const SignupButton = styled.button`
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  color: #0095f6;
+  font-weight: 600;
+  margin-left: 3px;
+  font-size: 14px;
+  cursor: pointer;
+`;
+
+const AppText = styled.p`
+  color: #262626;
+  font-size: 14px;
+  line-height: 18px;
+  margin: 10px 0;
+  text-align: center;
+`;
+
+const DownloadsContainer = styled.div`
+  display: flex;
+`;
+
+const DownloadImg = styled.img`
+  height: 40px;
+`;
+
+const FooterContent = styled(ColumnContainer)`
+  margin-bottom: 52px;
+`;
+
+const LinksContainer = styled(ColumnContainer)`
+  margin-top: 24px;
+`;
+
+const LinksRow = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const InfoRow = styled(LinksRow)`
+  margin: 12px 0;
+`;
+
+const InfoText = styled.span`
+  color: #8e8e8e;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
 `;
 
 // STYLED COMPONENTS END
 
 const LoginPage = (props) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordType, setPasswordType] = useState('password');
   const [showButton, setShowButton] = useState(false);
+  const [valid, setValid] = useState(false);
+
+  const validateInputs = (userInput, passwordInput) => {
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (userInput.match(emailRegex) && passwordInput.length >= 6) {
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+  };
+
+  const handleUsernameInput = (e) => {
+    const input = e.target.value;
+
+    setUsername(input);
+    validateInputs(input, password);
+  };
 
   const handlePasswordInput = (e) => {
     const input = e.target.value;
 
     setPassword(input);
+    validateInputs(username, input);
 
     if (input) {
       setShowButton(true);
@@ -122,8 +283,8 @@ const LoginPage = (props) => {
   };
 
   return (
-    <section>
-      <main>
+    <Section>
+      <MainContainer>
         <MainContent>
           <LeftContent>
             <ImgContainer>
@@ -135,9 +296,10 @@ const LoginPage = (props) => {
               <Logo src="logo.png" />
               <LoginForm>
                 <TextInput
-                  label="Phone number, username, or email"
-                  placeholder="Phone number, username, or email"
+                  label="Email"
+                  placeholder="Email"
                   variant="filled"
+                  type="email"
                   inputProps={{
                     style: {
                       backgroundColor: 'rgb(250, 250, 250)',
@@ -153,6 +315,7 @@ const LoginPage = (props) => {
                     },
                   }}
                   InputProps={{ disableUnderline: true }}
+                  onChange={handleUsernameInput}
                 />
                 <PasswordContainer>
                   <TextInput
@@ -181,14 +344,135 @@ const LoginPage = (props) => {
                     {passwordType === 'password' ? 'Show' : 'Hide'}
                   </ShowButton>
                 </PasswordContainer>
-                <LoginButton type="submit">Log In</LoginButton>
+                <LoginButton type="submit" disabled={!valid}>
+                  Log In
+                </LoginButton>
+                <SplitContainer>
+                  <HorizontalLine />
+                  <OrText>or</OrText>
+                  <HorizontalLine />
+                </SplitContainer>
+                <FacebookButton>
+                  <FontAwesomeIcon
+                    icon={faFacebookSquare}
+                    className="facebook-icon"
+                  />
+                  <FacebookText>Log in with Facebook</FacebookText>
+                </FacebookButton>
+                <ForgotText>Forgot password?</ForgotText>
               </LoginForm>
             </LoginBox>
+            <SignupBox>
+              <SignupText>Don&apos;t have an account?</SignupText>
+              <SignupButton>Sign up</SignupButton>
+            </SignupBox>
+            <AppText>Get the app.</AppText>
+            <DownloadsContainer>
+              <a
+                href="https://apps.apple.com/app/instagram/id389801252?vt=lo"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <DownloadImg
+                  src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180ae7a0bcf7.png"
+                  alt="Available on the App Store"
+                  style={{ marginRight: '8px' }}
+                />
+              </a>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.instagram.android&referrer=utm_source%3Dinstagramweb%26utm_campaign%3DloginPage%26ig_mid%3D08253BA2-FF09-408D-A06D-263941B4B428%26utm_content%3Dlo%26utm_medium%3Dbadge"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <DownloadImg
+                  src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc748.png"
+                  alt="Available on Google Play"
+                />
+              </a>
+            </DownloadsContainer>
           </RightContent>
         </MainContent>
-      </main>
-      {/* <footer></footer> */}
-    </section>
+      </MainContainer>
+
+      <footer style={{ marginTop: 'auto' }}>
+        <FooterContent>
+          <LinksContainer>
+            <LinksRow>
+              <FooterLink link="https://about.instagram.com/" text="About" />
+              <FooterLink
+                link="https://about.instagram.com/blog/"
+                text="Blog"
+              />
+              <FooterLink
+                link="https://www.instagram.com/about/jobs/"
+                text="Jobs"
+              />
+              <FooterLink link="https://help.instagram.com/" text="Help" />
+              <FooterLink
+                link="https://developers.facebook.com/docs/instagram"
+                text="API"
+              />
+              <FooterLink
+                link="https://www.instagram.com/legal/privacy/"
+                text="Privacy"
+              />
+              <FooterLink
+                link="https://www.instagram.com/legal/terms/"
+                text="Terms"
+              />
+              <FooterLink
+                link="https://www.instagram.com/directory/profiles/"
+                text="Top Accounts"
+              />
+              <FooterLink
+                link="https://www.instagram.com/directory/hashtags/"
+                text="Hashtags"
+              />
+              <FooterLink
+                link="https://www.instagram.com/explore/locations/"
+                text="Locations"
+              />
+            </LinksRow>
+            <LinksRow>
+              <FooterLink
+                link="https://www.instagram.com/topics/beauty/"
+                text="Beauty"
+              />
+              <FooterLink
+                link="https://www.instagram.com/topics/dance-and-performance/"
+                text="Dance"
+              />
+              <FooterLink
+                link="https://www.instagram.com/topics/fitness/"
+                text="Fitness"
+              />
+              <FooterLink
+                link="https://www.instagram.com/topics/food-and-drink/"
+                text="Food & Drink"
+              />
+              <FooterLink
+                link="https://www.instagram.com/topics/home-and-garden/"
+                text="Home & Garden"
+              />
+              <FooterLink
+                link="https://www.instagram.com/topics/music/"
+                text="Music"
+              />
+              <FooterLink
+                link="https://www.instagram.com/topics/visual-arts/"
+                text="Visual Arts"
+              />
+            </LinksRow>
+          </LinksContainer>
+          <InfoRow>
+            <InfoText>English</InfoText>
+            <InfoText style={{ marginLeft: '16px' }}>
+              © 2021 Instagram from Facebook
+            </InfoText>
+          </InfoRow>
+        </FooterContent>
+      </footer>
+    </Section>
   );
 };
 

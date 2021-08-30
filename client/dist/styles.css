@@ -1,10 +1,21 @@
 html, body, #root, #app {
   height: 100%;
   background-color: #fafafa;
+  font-family: 'Roboto', sans-serif;
+}
+
+button {
+  font-family: 'Roboto', sans-serif;
 }
 
 #app {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.facebook-icon {
+  font-size: 18px;
+  color: #385185;
+  margin-right: 8px;
 }
