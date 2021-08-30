@@ -1,7 +1,26 @@
-html, body, #root, #app {
+/* html, body, #root, #app {
   height: 100%;
   background-color: #fafafa;
   font-family: 'Roboto', sans-serif;
+} */
+
+html, body, #root, #app {
+  background-color: #fafafa;
+  font-family: 'Roboto', sans-serif;
+}
+
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  flex-shrink: 0;
 }
 
 button {

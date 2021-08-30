@@ -37,7 +37,7 @@ const MainContent = styled.div`
   width: 100%;
   max-width: 935px;
   padding-bottom: 32px;
-  margin-top: 110px;
+  margin-top: 32px;
 `;
 
 const LeftContent = styled.div`

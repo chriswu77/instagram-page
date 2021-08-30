@@ -39,7 +39,7 @@ const Box = styled(ColumnContainer)`
 const MainContent = styled(ColumnContainer)`
   align-items: center;
   max-width: 350px;
-  margin-top: 140px;
+  margin-top: 30px;
   margin-bottom: 44px;
 `;
 
