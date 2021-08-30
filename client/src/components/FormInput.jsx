@@ -10,7 +10,6 @@ const TextInput = styled(TextField)`
   border: 1px solid rgb(219, 219, 219) !important;
   border-radius: 3px !important;
   margin-bottom: 6px !important;
-  // padding: 27px 12px 10px !important;
 `;
 
 const FormInput = (props) => {

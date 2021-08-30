@@ -46,10 +46,4 @@ app.use(passport.session());
 
 app.use('/api', router);
 
-app.use((req, res, next) => {
-  console.log('req.session', req.session);
-  console.log('req', req.user);
-  next();
-});
-
 module.exports = app;

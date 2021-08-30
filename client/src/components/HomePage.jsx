@@ -21,7 +21,7 @@ const LogoutButton = styled.button`
   font-size: 20px;
 `;
 
-const HomePage = (props) => {
+const HomePage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const user = useSelector((state) => state.auth.user);

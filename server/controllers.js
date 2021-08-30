@@ -2,7 +2,6 @@ const User = require('../database/models/user');
 
 const controllers = {
   login: async (req, res) => {
-    console.log('logged in', req.user);
     res.status(200).send(req.user);
   },
 
@@ -25,7 +24,6 @@ const controllers = {
   },
 
   getUser: async (req, res) => {
-    console.log('get user route', req.user);
     if (req.user) {
       res.status(200).send(req.user);
     } else {

@@ -1,15 +1,13 @@
 /* eslint-disable no-useless-escape */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
-import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import FormInput from './FormInput';
 import FooterLink from './FooterLink';
-import { authActions } from '../../store/auth';
 
 // STYLED COMPONENTS
 const ColumnContainer = styled.div`
@@ -41,7 +39,6 @@ const Box = styled(ColumnContainer)`
 const MainContent = styled(ColumnContainer)`
   align-items: center;
   max-width: 350px;
-  // margin-top: 12px;
   margin-top: 140px;
   margin-bottom: 44px;
 `;
@@ -224,12 +221,9 @@ const InfoText = styled.span`
   line-height: 14px;
   font-weight: 400;
 `;
-
 // STYLED COMPONENTS END
 
-const SignupPage = (props) => {
-  const dispatch = useDispatch();
-
+const SignupPage = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');

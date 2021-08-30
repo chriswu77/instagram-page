@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import LoginPage from './LoginPage';
 import SignupPage from './SignupPage';
@@ -16,13 +16,8 @@ const App = () => {
     const response = await axios.get('/api/users');
     if (response.data) {
       dispatch(authActions.logIn(response.data));
-      // setUser(response.data);
-      // setIsLoggedIn(true);
     } else {
-      console.log('no user');
       dispatch(authActions.logOut());
-      // setUser(null);
-      // setIsLoggedIn(false);
     }
     setWasInitialized(true);
   };

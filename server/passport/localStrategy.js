@@ -3,7 +3,6 @@ const User = require('../../database/models/user');
 
 const localStrategy = new LocalStrategy((username, password, done) => {
   User.findOne({ email: username }, async (err, user) => {
-    console.log(user);
     if (err) {
       return done(err);
     }

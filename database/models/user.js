@@ -34,12 +34,10 @@ userSchema.methods.hashPassword = async function (plainTextPassword) {
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    console.log('password was not modified. no hashing needed');
     return next();
   }
 
   this.password = await this.hashPassword(this.password);
-  console.log('hashed password in pre save');
   return next();
 });
 

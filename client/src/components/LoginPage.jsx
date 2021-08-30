@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-escape */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
@@ -93,14 +93,13 @@ const ShowButton = styled.button`
   visibility: ${(props) => (props.password.length > 0 ? 'visible' : 'hidden')};
   position: absolute;
   top: 17px;
-  right: 1px;
+  right: 15px;
   border: none;
   font-size: 14px;
   font-weight: 600;
   background-color: transparent;
   cursor: pointer;
   padding: 0;
-  margin-right: 9px;
 `;
 
 const LoginButton = styled.button`
@@ -236,10 +235,9 @@ const InfoText = styled.span`
   line-height: 14px;
   font-weight: 400;
 `;
-
 // STYLED COMPONENTS END
 
-const LoginPage = (props) => {
+const LoginPage = () => {
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
@@ -305,7 +303,6 @@ const LoginPage = (props) => {
       setShowError(false);
       setRedirectTo('/');
     } catch (err) {
-      console.log('login error:', err);
       setShowError(true);
     }
   };
